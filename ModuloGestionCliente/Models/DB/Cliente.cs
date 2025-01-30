@@ -29,4 +29,6 @@ public partial class Cliente
     public decimal Cuenta { get; set; }
 
     public virtual ICollection<Transaccion> Transaccions { get; set; } = new List<Transaccion>();
+
+
 }

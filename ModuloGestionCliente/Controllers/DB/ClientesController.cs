@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ModuloGestionCliente.Models.DB;
 
-namespace ModuloGestionCliente.Controllers
+namespace ModuloGestionCliente.Controllers.DB
 {
     public class ClientesController : Controller
     {
@@ -53,17 +53,28 @@ namespace ModuloGestionCliente.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,Nombres,Apellidos,Cedula,Contrasea,Correo,TotalCuenta,Direccion,Cuenta")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("IdCliente,Nombres,Apellidos,Cedula,Contrasea,Correo,TotalCuenta,Direccion")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
+                cliente.Cuenta = GenerarNumeroCuenta();
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(cliente);
         }
+        private int GenerarNumeroCuenta()
+        {
+            Random random = new Random();
+            int numeroCuenta;
+            do
+            {
+                numeroCuenta = random.Next(1000000000, 1999999999); // Genera un número de 10 dígitos
+            } while (_context.Clientes.Any(c => c.Cuenta == numeroCuenta)); // Verifica que no esté repetido
 
+            return numeroCuenta;
+        }
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -152,5 +163,6 @@ namespace ModuloGestionCliente.Controllers
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
         }
+        
     }
 }

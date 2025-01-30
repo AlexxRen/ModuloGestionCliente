@@ -29,8 +29,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Contrasea" class="control-label"></label>
-                <input asp-for="Contrasea" class="form-control" />
+                <input asp-for="Contrasea" type="password" class="form-control" id="password" />
                 <span asp-validation-for="Contrasea" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="ConfirmarContraseña" class="control-label">Confirmar Contraseña</label>
+                <input type="password" class="form-control" id="confirmPassword" name="ConfirmarContraseña" />
+                <span class="text-danger" id="passwordError"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Correo" class="control-label"></label>
@@ -48,12 +53,7 @@
                 <span asp-validation-for="Direccion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Cuenta" class="control-label"></label>
-                <input asp-for="Cuenta" class="form-control" />
-                <span asp-validation-for="Cuenta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" onclick="return validarContraseña();" />
             </div>
         </form>
     </div>
@@ -64,5 +64,22 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function validarContraseña() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var errorSpan = document.getElementById("passwordError");
+
+            if (password !== confirmPassword) {
+                errorSpan.textContent = "Las contraseñas no coinciden.";
+                return false;
+            }
+            errorSpan.textContent = "";
+            return true;
+        }
+    </script>
 }
