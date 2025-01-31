@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using ModuloGestionCliente.Models.DB;
 
@@ -7,6 +8,15 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/LoginCliente/Login";
+        options.LogoutPath = "/LoginCliente/Logout";
+    });
+
+    builder.Services.AddAuthorization();
+
     builder.Services.AddRazorPages();
     builder.Services.AddControllersWithViews();
 
