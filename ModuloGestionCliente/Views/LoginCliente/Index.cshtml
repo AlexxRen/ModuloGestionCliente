@@ -1,0 +1,32 @@
+﻿@model ModuloGestionCliente.Models.DB.Cliente
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<!-- Modal para éxito -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">¡Éxito!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Login realizado correctamente
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (TempData["LoginSuccess"] != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            });
+        </script>
+    }
+}

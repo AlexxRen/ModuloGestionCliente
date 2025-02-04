@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Monto" class="control-label"></label>
-                <input asp-for="Monto" class="form-control" />
+                <input asp-for="Monto" class="form-control" type="number" step="0.01" min="0.01" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -29,12 +29,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdOrigenCli" class="control-label"></label>
-                <input asp-for="IdOrigenCli" class="form-control" />
+                <input asp-for="IdOrigenCli" class="form-control" type="number" min="1" />
                 <span asp-validation-for="IdOrigenCli" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdCliente" class="control-label"></label>
-                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
+                <input asp-for="IdCliente" class="form-control" type="number" min="1" />
+                <span asp-validation-for="IdCliente" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

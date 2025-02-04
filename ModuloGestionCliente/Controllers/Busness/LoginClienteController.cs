@@ -26,9 +26,14 @@ namespace ModuloGestionCliente.Controllers.Business
         // POST: Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(string Correo, string Contrasea)
         {
-            var user = _context.Clientes.FirstOrDefault(c => c.Correo == username && c.Contrasea == password);
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/LoginCliente/Login.cshtml");
+            }
+
+            var user = _context.Clientes.FirstOrDefault(c => c.Correo == Correo && c.Contrasea == Contrasea);
 
             if (user == null)
             {
@@ -48,6 +53,7 @@ namespace ModuloGestionCliente.Controllers.Business
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
+            TempData["LoginSuccess"] = true;
             return RedirectToAction("Index", "Transaccions");
         }
 

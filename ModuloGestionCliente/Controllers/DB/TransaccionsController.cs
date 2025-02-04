@@ -58,15 +58,35 @@ namespace ModuloGestionCliente.Controllers.DB
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTransaccion,FechaTransaccion,Monto,Estado,IdOrigenCli,IdCliente")] Transaccion transaccion)
         {
+            // Validar existencia de clientes
+            var clienteDestino = await _context.Clientes.FindAsync(transaccion.IdCliente);
+            var clienteOrigen = await _context.Clientes.FindAsync(transaccion.IdOrigenCli);
+
+            if (clienteDestino == null || clienteOrigen == null)
+            {
+                ModelState.AddModelError(string.Empty, "Uno o ambos clientes no existen");
+            }
+            else if (clienteDestino.TotalCuenta < transaccion.Monto)
+            {
+                ModelState.AddModelError("Monto", "Saldo insuficiente");
+            }
+
             if (ModelState.IsValid)
             {
+                // Actualizar saldos
+                clienteDestino.TotalCuenta -= transaccion.Monto;
+                clienteOrigen.TotalCuenta += transaccion.Monto; // Si es una transferencia
+
                 _context.Add(transaccion);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Contrasea", transaccion.IdCliente);
+
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "Nombres", transaccion.IdCliente);
             return View(transaccion);
+
         }
+
 
         // GET: Transaccions/Edit/5
         public async Task<IActionResult> Edit(int? id)
