@@ -6,18 +6,14 @@ namespace ModuloGestionCliente.Models.DB;
 
 public partial class ProyectContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-    public ProyectContext(IConfiguration configuration)
+    public ProyectContext()
     {
-        _configuration = configuration;
     }
 
-    /*public ProyectContext(DbContextOptions<ProyectContext> options)
+    public ProyectContext(DbContextOptions<ProyectContext> options)
         : base(options)
     {
-
-    }*/
-
+    }
 
     public virtual DbSet<Auditoria> Auditorias { get; set; }
 
@@ -33,10 +29,12 @@ public partial class ProyectContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
-        }
+        var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables() // Read environment variables
+            .Build();
+
+        var connectionString = configuration.GetConnectionString("YourDatabaseName"); // Same name as in appsettings.json or environment variable name after double underscores
+        optionsBuilder.UseSqlServer(connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -150,10 +148,29 @@ public partial class ProyectContext : DbContext
             entity.Property(e => e.IdOrigenCli).HasColumnName("Id_OrigenCli");
             entity.Property(e => e.Monto).HasColumnType("money");
 
-            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Transaccions)
+            entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.TransaccionIdClienteNavigations)
                 .HasForeignKey(d => d.IdCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Cliente_Transaccion_fk");
+
+            entity.HasOne(d => d.IdOrigenCliNavigation).WithMany(p => p.TransaccionIdOrigenCliNavigations)
+                .HasForeignKey(d => d.IdOrigenCli)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Transaccion_Cliente_Origen");
+
+            modelBuilder.Entity<Transaccion>()
+    .HasOne(t => t.IdOrigenCliNavigation)
+    .WithMany()
+    .HasForeignKey(t => t.IdOrigenCli)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Transaccion>()
+                .HasOne(t => t.IdClienteNavigation)
+                .WithMany()
+                .HasForeignKey(t => t.IdCliente)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
         });
 
         modelBuilder.Entity<Usuario>(entity =>

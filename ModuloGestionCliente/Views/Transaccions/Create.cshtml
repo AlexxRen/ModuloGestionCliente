@@ -5,49 +5,33 @@
 }
 
 <h1>Create</h1>
-
-<h4>Transaccion</h4>
+<h4>Transacción</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="FechaTransaccion" class="control-label"></label>
-                <input asp-for="FechaTransaccion" class="form-control" />
-                <span asp-validation-for="FechaTransaccion" class="text-danger"></span>
+                <label class="control-label">Número de Cuenta Origen</label>
+                <input name="CuentaOrigen" class="form-control" type="number" step="0.01" required />
             </div>
+
+            <div class="form-group">
+                <label class="control-label">Número de Cuenta Destino</label>
+                <input name="CuentaDestino" class="form-control" type="number" step="0.01" required />
+            </div>
+
             <div class="form-group">
                 <label asp-for="Monto" class="control-label"></label>
-                <input asp-for="Monto" class="form-control" type="number" step="0.01" min="0.01" />
+                <input asp-for="Monto" class="form-control" type="number" step="0.01" min="0.01" required />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdOrigenCli" class="control-label"></label>
-                <input asp-for="IdOrigenCli" class="form-control" type="number" min="1" />
-                <span asp-validation-for="IdOrigenCli" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <input asp-for="IdCliente" class="form-control" type="number" min="1" />
-                <span asp-validation-for="IdCliente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
